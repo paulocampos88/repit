@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #1c1f26;
+  color: #f4f4f5;
+}
+
+/* ─── Dual-range slider ──────────────────────────────────────────── */
+
+.dual-range {
+  position: relative;
+  height: 72px; /* room for top-ball + track + bottom-ball */
+  cursor: pointer;
+}
+
+/* Background track */
+.dual-range .track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 33px;
+  height: 6px;
+  border-radius: 999px;
+  background-color: #3f4350;
+  pointer-events: none;
+}
+
+/* Highlighted section between start and end */
+.dual-range .range-highlight {
+  position: absolute;
+  top: 33px;
+  height: 6px;
+  border-radius: 999px;
+  background-color: #10b981;
+  pointer-events: none;
+}
+
+/* Draggable handles (replace the old invisible range inputs) */
+.dual-range .handle-drag {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  /* Wide padding = bigger hit area for thumbs */
+  padding: 0 12px;
+  box-sizing: content-box;
+  z-index: 2;
+}
+
+.dual-range .handle-drag:active {
+  cursor: grabbing;
+}
+
+/* Start handle: ball at top, line goes down to track (top: 33px) */
+.dual-range .handle-drag.start {
+  top: 3px;          /* 3px gap above ball */
+  height: 30px;      /* reaches track top */
+  justify-content: flex-start;
+}
+
+/* End handle: line goes up from track bottom, ball at bottom */
+.dual-range .handle-drag.end {
+  top: 39px;         /* track bottom (33+6) */
+  height: 30px;      /* ball bottom near container bottom */
+  justify-content: flex-end;
+}
+
+.dual-range .handle-ball {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #7c3aed;
+  border: 2px solid #f4f4f5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+  transition: transform 0.1s;
+}
+
+.dual-range .handle-drag:hover .handle-ball,
+.dual-range .handle-drag:active .handle-ball {
+  transform: scale(1.25);
+}
+
+.dual-range .handle-line {
+  width: 2px;
+  flex: 1;
+  background-color: #7c3aed;
+}
