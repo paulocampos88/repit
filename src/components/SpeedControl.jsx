@@ -4,7 +4,7 @@ export default function SpeedControl({ speed, setSpeed }) {
   return (
     <div className="flex items-center gap-3 flex-wrap">
       <span className="text-sm text-zinc-300">
-        Speed: <span className="text-accent font-semibold">{speed}x</span>
+        Speed: <span className="text-accent2 font-semibold drop-shadow-neon-cyan">{speed}x</span>
       </span>
       <div className="flex gap-1.5 flex-wrap">
         {SPEEDS.map((s) => (
@@ -12,10 +12,10 @@ export default function SpeedControl({ speed, setSpeed }) {
             key={s}
             type="button"
             onClick={() => setSpeed(s)}
-            className={`px-2.5 py-1.5 rounded-lg text-sm border transition-colors ${
+            className={`px-2.5 py-1.5 rounded-lg text-sm border transition-all ${
               s === speed
-                ? 'bg-accent border-accent text-white'
-                : 'border-zinc-600 text-zinc-300 hover:border-zinc-400'
+                ? 'bg-accent2 border-accent2 text-ink font-semibold shadow-neon-cyan'
+                : 'border-white/10 text-zinc-300 hover:border-accent2/60 hover:text-accent2'
             }`}
           >
             {s}x

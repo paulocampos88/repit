@@ -25,16 +25,16 @@ export default function ChangeVideoBar({ onSubmit }) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Paste another YouTube URL..."
-          className="flex-1 rounded-lg bg-zinc-800 border border-zinc-600 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40"
+          className="flex-1 rounded-lg bg-surface border border-white/10 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-accent2 focus:ring-2 focus:ring-accent2/30 transition-shadow"
         />
         <button
           type="submit"
-          className="rounded-lg bg-accent hover:bg-accent/90 text-white text-sm font-medium px-4 py-2 whitespace-nowrap transition-colors"
+          className="rounded-lg bg-accent2 hover:bg-accent2/90 text-ink text-sm font-semibold px-4 py-2 whitespace-nowrap transition-all shadow-neon-cyan"
         >
           Load video
         </button>
       </div>
-      {error && <p className="text-red-400 text-xs">{error}</p>}
+      {error && <p className="text-danger text-xs">{error}</p>}
     </form>
   )
 }

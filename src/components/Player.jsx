@@ -43,31 +43,33 @@ export default function Player({ containerRef, isReady }) {
   }
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative w-full bg-zinc-900 rounded-xl overflow-hidden shadow-2xl"
-      style={{ aspectRatio: '16/9' }}
-    >
-      {!isReady && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="h-10 w-10 rounded-full border-4 border-zinc-600 border-t-accent animate-spin" />
-        </div>
-      )}
+    <div className="relative rounded-xl p-[1px] bg-gradient-to-br from-accent/60 via-accent2/40 to-loop/40 shadow-[0_0_35px_rgba(178,75,243,0.25)]">
+      <div
+        ref={wrapperRef}
+        className="relative w-full bg-ink rounded-xl overflow-hidden"
+        style={{ aspectRatio: '16/9' }}
+      >
+        {!isReady && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full border-4 border-white/10 border-t-accent animate-spin drop-shadow-neon" />
+          </div>
+        )}
 
-      {/* YouTube player mounts here — React never touches its children */}
-      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+        {/* YouTube player mounts here — React never touches its children */}
+        <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 
-      {/* Fullscreen button */}
-      {isReady && (
-        <button
-          type="button"
-          onClick={toggleFullscreen}
-          aria-label={isFullscreen ? 'Sair do modo tela cheia' : 'Tela cheia'}
-          className="absolute top-2 right-2 z-10 flex items-center justify-center h-8 w-8 rounded-lg bg-black/60 hover:bg-black/80 text-white transition-colors backdrop-blur-sm"
-        >
-          {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
-        </button>
-      )}
+        {/* Fullscreen button */}
+        {isReady && (
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            aria-label={isFullscreen ? 'Sair do modo tela cheia' : 'Tela cheia'}
+            className="absolute top-2 right-2 z-10 flex items-center justify-center h-8 w-8 rounded-lg bg-black/60 hover:bg-black/80 text-white transition-colors backdrop-blur-sm"
+          >
+            {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

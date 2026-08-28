@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 html {
   color-scheme: dark;
@@ -7,8 +8,36 @@ html {
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background-color: #1c1f26;
   color: #f4f4f5;
+  min-height: 100vh;
+  background-color: #06060b;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(178, 75, 243, 0.16), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(34, 211, 238, 0.12), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(57, 255, 136, 0.08), transparent 45%),
+    linear-gradient(180deg, #08070f 0%, #06060b 60%, #050509 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+::selection {
+  background: rgba(178, 75, 243, 0.4);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(178, 75, 243, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(178, 75, 243, 0.6);
 }
 
 /* ─── Dual-range slider ──────────────────────────────────────────── */
@@ -27,7 +56,7 @@ body {
   top: 33px;
   height: 6px;
   border-radius: 999px;
-  background-color: #3f4350;
+  background-color: #22222f;
   pointer-events: none;
 }
 
@@ -37,7 +66,8 @@ body {
   top: 33px;
   height: 6px;
   border-radius: 999px;
-  background-color: #10b981;
+  background: linear-gradient(90deg, #39ff88, #22d3ee);
+  box-shadow: 0 0 12px rgba(57, 255, 136, 0.45);
   pointer-events: none;
 }
 
@@ -79,9 +109,9 @@ body {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: #7c3aed;
+  background-color: #b24bf3;
   border: 2px solid #f4f4f5;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 10px rgba(178, 75, 243, 0.85), 0 1px 4px rgba(0, 0, 0, 0.6);
   flex-shrink: 0;
   transition: transform 0.1s;
 }
@@ -94,5 +124,6 @@ body {
 .dual-range .handle-line {
   width: 2px;
   flex: 1;
-  background-color: #7c3aed;
+  background-color: #b24bf3;
+  box-shadow: 0 0 6px rgba(178, 75, 243, 0.6);
 }

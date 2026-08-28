@@ -135,7 +135,7 @@ export default function LoopControls({
   const endPct = duration ? (loopEnd / duration) * 100 : 100
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4 rounded-2xl border border-white/5 bg-surface/50 p-4 sm:p-5 backdrop-blur-sm">
       {/* Dual-range slider */}
       <div className="dual-range" ref={trackRef} onClick={onTrackClick}>
         <div className="track" />
@@ -173,7 +173,7 @@ export default function LoopControls({
           <button
             type="button"
             onClick={() => nudgeStart(-0.5)}
-            className="text-xs text-zinc-300 hover:text-white border border-zinc-600 rounded-lg px-2 py-2 whitespace-nowrap"
+            className="text-xs bg-white/5 hover:bg-accent/10 text-zinc-200 hover:text-accent border border-white/20 hover:border-accent/60 rounded-lg px-2 py-2 whitespace-nowrap transition-colors"
           >
             -0.5s
           </button>
@@ -182,19 +182,19 @@ export default function LoopControls({
             value={startText}
             onChange={(e) => setStartText(e.target.value)}
             onBlur={commitStartText}
-            className="w-24 rounded-lg bg-zinc-800 border border-zinc-600 px-2 py-2 text-center text-white focus:outline-none focus:border-accent"
+            className="w-24 rounded-lg bg-surface border border-white/10 px-2 py-2 text-center text-white focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
           <button
             type="button"
             onClick={() => nudgeStart(0.5)}
-            className="text-xs text-zinc-300 hover:text-white border border-zinc-600 rounded-lg px-2 py-2 whitespace-nowrap"
+            className="text-xs bg-white/5 hover:bg-accent/10 text-zinc-200 hover:text-accent border border-white/20 hover:border-accent/60 rounded-lg px-2 py-2 whitespace-nowrap transition-colors"
           >
             +0.5s
           </button>
           <button
             type="button"
             onClick={markStart}
-            className="text-sm text-zinc-300 hover:text-white border border-zinc-600 rounded-lg px-3 py-2 whitespace-nowrap"
+            className="text-sm bg-white/5 hover:bg-accent/10 text-zinc-200 hover:text-accent border border-white/20 hover:border-accent/60 rounded-lg px-3 py-2 whitespace-nowrap transition-colors"
           >
             📍 Set start
           </button>
@@ -204,14 +204,14 @@ export default function LoopControls({
           <button
             type="button"
             onClick={markEnd}
-            className="text-sm text-zinc-300 hover:text-white border border-zinc-600 rounded-lg px-3 py-2 whitespace-nowrap"
+            className="text-sm bg-white/5 hover:bg-accent/10 text-zinc-200 hover:text-accent border border-white/20 hover:border-accent/60 rounded-lg px-3 py-2 whitespace-nowrap transition-colors"
           >
             📍 Set end
           </button>
           <button
             type="button"
             onClick={() => nudgeEnd(-0.5)}
-            className="text-xs text-zinc-300 hover:text-white border border-zinc-600 rounded-lg px-2 py-2 whitespace-nowrap"
+            className="text-xs bg-white/5 hover:bg-accent/10 text-zinc-200 hover:text-accent border border-white/20 hover:border-accent/60 rounded-lg px-2 py-2 whitespace-nowrap transition-colors"
           >
             -0.5s
           </button>
@@ -220,12 +220,12 @@ export default function LoopControls({
             value={endText}
             onChange={(e) => setEndText(e.target.value)}
             onBlur={commitEndText}
-            className="w-24 rounded-lg bg-zinc-800 border border-zinc-600 px-2 py-2 text-center text-white focus:outline-none focus:border-accent"
+            className="w-24 rounded-lg bg-surface border border-white/10 px-2 py-2 text-center text-white focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
           <button
             type="button"
             onClick={() => nudgeEnd(0.5)}
-            className="text-xs text-zinc-300 hover:text-white border border-zinc-600 rounded-lg px-2 py-2 whitespace-nowrap"
+            className="text-xs bg-white/5 hover:bg-accent/10 text-zinc-200 hover:text-accent border border-white/20 hover:border-accent/60 rounded-lg px-2 py-2 whitespace-nowrap transition-colors"
           >
             +0.5s
           </button>
@@ -238,15 +238,15 @@ export default function LoopControls({
           role="switch"
           aria-checked={loopEnabled}
           onClick={() => setLoopEnabled((v) => !v)}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-colors shadow-lg ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all ${
             loopEnabled
-              ? 'bg-loop text-zinc-950 shadow-loop/30'
-              : 'bg-zinc-700 text-zinc-200 shadow-none'
+              ? 'bg-loop text-ink shadow-neon-loop'
+              : 'bg-white/5 text-zinc-200 border border-white/10'
           }`}
         >
           <span
             className={`h-2.5 w-2.5 rounded-full ${
-              loopEnabled ? 'bg-zinc-950' : 'bg-zinc-400'
+              loopEnabled ? 'bg-ink' : 'bg-zinc-400'
             }`}
           />
           Loop {loopEnabled ? 'ON' : 'OFF'}

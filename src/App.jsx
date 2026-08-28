@@ -7,7 +7,15 @@ import AdBanner from './components/AdBanner'
 import CopyLinkButton from './components/CopyLinkButton'
 import PlayPauseButton from './components/PlayPauseButton'
 import ChangeVideoBar from './components/ChangeVideoBar'
+import FavoriteButton from './components/FavoriteButton'
+import HistoryButton from './components/HistoryButton'
+import HistoryFavoritesPanel from './components/HistoryFavoritesPanel'
+import AuthButton from './components/AuthButton'
 import { useYouTubePlayer } from './hooks/useYouTubePlayer'
+import { useAuth } from './hooks/useAuth'
+import { fetchVideoMeta } from './lib/videoMeta'
+import { upsertHistory } from './lib/history'
+import { addFavorite, removeFavorite, isFavorite } from './lib/favorites'
 
 function readParamsFromUrl() {
   const params = new URLSearchParams(window.location.search)
@@ -31,6 +39,10 @@ function App() {
   const [loopEnd, setLoopEnd] = useState(initial.b)
   const [loopEnabled, setLoopEnabled] = useState(true)
   const [speed, setSpeed] = useState(initial.speed)
+
+  const auth = useAuth()
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [favoriteActive, setFavoriteActive] = useState(false)
 
   const playerContainerRef = useRef(null)
   const { player, isReady, duration, error, isPlaying } = useYouTubePlayer(
@@ -76,6 +88,53 @@ function App() {
     window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`)
   }, [videoId, loopStart, loopEnd, speed])
 
+  // Record history + favorite status whenever a video loads for a logged-in user
+  useEffect(() => {
+    let cancelled = false
+
+    if (!videoId || !auth.user) {
+      setFavoriteActive(false)
+      return
+    }
+
+    fetchVideoMeta(videoId).then(async (meta) => {
+      if (cancelled) return
+      upsertHistory({
+        userId: auth.user.id,
+        videoId,
+        title: meta.title,
+        thumbnailUrl: meta.thumbnailUrl,
+        loopStart,
+        loopEnd,
+        speed,
+      })
+      const fav = await isFavorite(auth.user.id, videoId)
+      if (!cancelled) setFavoriteActive(fav)
+    })
+
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoId, auth.user])
+
+  async function toggleFavorite() {
+    if (!auth.user || !videoId) return
+    if (favoriteActive) {
+      setFavoriteActive(false)
+      await removeFavorite(auth.user.id, videoId)
+    } else {
+      setFavoriteActive(true)
+      const meta = await fetchVideoMeta(videoId)
+      await addFavorite({
+        userId: auth.user.id,
+        videoId,
+        title: meta.title,
+        thumbnailUrl: meta.thumbnailUrl,
+      })
+    }
+  }
+
   function handleSeek(time) {
     if (player && isReady) {
       player.seekTo(time, true)
@@ -117,16 +176,38 @@ function App() {
     setLoadKey((k) => k + 1) // force reload even if same video ID
   }
 
+  function handleSelectFromPanel(id) {
+    setPanelOpen(false)
+    handleUrlSubmit(id)
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between px-4 sm:px-8 py-4">
-        <span className="text-xl font-bold text-white">
-          Rep<span className="text-accent">it</span>
+      <header className="flex items-center justify-between px-4 sm:px-8 py-4 border-b border-white/5 backdrop-blur-sm sticky top-0 z-20 bg-ink/60">
+        <span className="text-xl sm:text-2xl font-extrabold tracking-tight">
+          <span className="text-white">Rep</span>
+          <span className="text-accent drop-shadow-neon">it</span>
         </span>
-        {videoId && <CopyLinkButton getUrl={() => window.location.href} />}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {videoId && auth.user && <FavoriteButton active={favoriteActive} onToggle={toggleFavorite} />}
+          {videoId && <CopyLinkButton getUrl={() => window.location.href} />}
+          {auth.user && (
+            <div className="relative">
+              <HistoryButton active={panelOpen} onToggle={() => setPanelOpen((v) => !v)} />
+              {panelOpen && (
+                <HistoryFavoritesPanel
+                  userId={auth.user.id}
+                  onSelectVideo={handleSelectFromPanel}
+                  onClose={() => setPanelOpen(false)}
+                />
+              )}
+            </div>
+          )}
+          <AuthButton auth={auth} />
+        </div>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 gap-8">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8 gap-8">
         {!videoId && <UrlInput onSubmit={handleUrlSubmit} />}
 
         {videoId && (
@@ -135,7 +216,7 @@ function App() {
 
             <Player containerRef={playerContainerRef} isReady={isReady} />
 
-            {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+            {error && <p className="text-danger text-sm text-center">{error}</p>}
 
             {isReady && duration > 0 && (
               <>

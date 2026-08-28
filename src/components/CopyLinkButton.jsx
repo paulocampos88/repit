@@ -17,7 +17,11 @@ export default function CopyLinkButton({ getUrl }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="text-sm rounded-lg border border-zinc-600 hover:border-zinc-400 text-zinc-200 px-3 py-1.5 transition-colors"
+      className={`text-sm rounded-lg border px-3 py-1.5 transition-all ${
+        copied
+          ? 'border-loop text-loop shadow-neon-loop'
+          : 'border-white/15 hover:border-accent2/70 text-zinc-200 hover:text-accent2'
+      }`}
     >
       {copied ? 'Copied!' : 'Copy link'}
     </button>
