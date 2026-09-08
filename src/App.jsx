@@ -11,11 +11,13 @@ import FavoriteButton from './components/FavoriteButton'
 import HistoryButton from './components/HistoryButton'
 import HistoryFavoritesPanel from './components/HistoryFavoritesPanel'
 import AuthButton from './components/AuthButton'
+import SaveClipButton from './components/SaveClipButton'
 import { useYouTubePlayer } from './hooks/useYouTubePlayer'
 import { useAuth } from './hooks/useAuth'
 import { fetchVideoMeta } from './lib/videoMeta'
 import { upsertHistory } from './lib/history'
 import { addFavorite, removeFavorite, isFavorite } from './lib/favorites'
+import { addClip } from './lib/clips'
 
 function readParamsFromUrl() {
   const params = new URLSearchParams(window.location.search)
@@ -135,6 +137,21 @@ function App() {
     }
   }
 
+  async function handleSaveClip(label) {
+    if (!auth.user || !videoId) return
+    const meta = await fetchVideoMeta(videoId)
+    await addClip({
+      userId: auth.user.id,
+      videoId,
+      title: meta.title,
+      thumbnailUrl: meta.thumbnailUrl,
+      label,
+      startTime: loopStart,
+      endTime: loopEnd ?? duration,
+      speed,
+    })
+  }
+
   function handleSeek(time) {
     if (player && isReady) {
       player.seekTo(time, true)
@@ -168,10 +185,10 @@ function App() {
     return player && isReady ? player.getCurrentTime() : 0
   }
 
-  function handleUrlSubmit(id) {
-    setLoopStart(0)
-    setLoopEnd(null)
-    setSpeed(1)
+  function handleUrlSubmit(id, loop) {
+    setLoopStart(loop?.start ?? 0)
+    setLoopEnd(loop?.end ?? null)
+    setSpeed(loop?.speed ?? 1)
     setVideoId(id)
     setLoadKey((k) => k + 1) // force reload even if same video ID
   }
@@ -179,6 +196,15 @@ function App() {
   function handleSelectFromPanel(id) {
     setPanelOpen(false)
     handleUrlSubmit(id)
+  }
+
+  function handleSelectClip(clip) {
+    setPanelOpen(false)
+    handleUrlSubmit(clip.video_id, {
+      start: clip.start_time,
+      end: clip.end_time,
+      speed: clip.speed ?? 1,
+    })
   }
 
   return (
@@ -198,6 +224,7 @@ function App() {
                 <HistoryFavoritesPanel
                   userId={auth.user.id}
                   onSelectVideo={handleSelectFromPanel}
+                  onSelectClip={handleSelectClip}
                   onClose={() => setPanelOpen(false)}
                 />
               )}
@@ -235,6 +262,7 @@ function App() {
                   onSeek={handleSeek}
                   getCurrentTime={getCurrentTime}
                 />
+                {auth.user && <SaveClipButton onSave={handleSaveClip} />}
                 <SpeedControl speed={speed} setSpeed={setSpeed} />
               </>
             )}
